@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import styledButton from '@/components/UI/Button.vue'
 
 const props = defineProps({
     data: Object,
@@ -26,7 +27,6 @@ function handleDeleteLabel() {
 
 
 <template>
-    <div :key="data.uuid">
         <div @click="handleChangeLabel">
             <div v-if="data.label && !isOpen">{{ data.label }}</div>
             <form v-else-if="isOpen" @submit.prevent="submit">
@@ -35,8 +35,7 @@ function handleDeleteLabel() {
             <div v-else>untiteld</div>
 
         </div>
-        <button class="btn" @click="handleDeleteLabel">
+        <styledButton @click.stop="handleDeleteLabel">
             Удалить
-        </button>
-    </div>
+        </styledButton>
 </template>
