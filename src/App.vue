@@ -5,6 +5,7 @@ const canvasRef = ref(null);
 const instance = ref(null)
 const imageUrl = ref(null);
 const dataArea = ref(null);
+const labelRef = ref(null)
 
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
@@ -19,13 +20,21 @@ const handleFileUpload = (event) => {
 
 function change(num) {
   instance.value.createType = num;
+  console.log(instance.value)
 }
-function changeLable(label) {
-  console.log(label)
-
+function changeLable(label, index) {
+  console.log(labelRef)
+  const newData = [...instance.value.dataset].map((el) => {
+    if (el.label === label){
+      el.label = 'untiteld'
+    }
+    return el
+})
+  console.log(newData)
+  instance.value.setData(newData)
 }
 
-function deleteLable(index){
+function deleteLable(index) {
   instance.value.deleteByIndex(index)
 }
 
@@ -39,13 +48,14 @@ onMounted(() => {
   instance.value.MIN_WIDTH = 1000
 
   instance.value.on("updated", (result) => {
-    console.log('result', result)
     const list = [...result];
-    // list[list.length - 1].label = 'untitled'
     list.sort((a, b) => a.index - b.index);
     dataArea.value = list;
   });
 
+  instance.value.on("add", (result) => {
+       result.label= 'untiteld'
+  });
 
   const option = [
     {
@@ -90,7 +100,7 @@ onMounted(() => {
       type: 5
     }
   ];
-  console.log(instance.value.update)
+  // console.log(instance.value.update)
   instance.value.setData(option);
 })
 
@@ -113,13 +123,13 @@ watch(imageUrl, (newImageUrl) => {
 
   </div>
   <canvas class="container" ref="canvasRef"></canvas>
-  <div 
-  v-for="(data, index) in dataArea" 
-  :key="data.label" 
-  
-  >
-    {{ data.label }}
-    <button @click="deleteLable(index)">Удалить</button>
+  <div v-for="(data, index) in dataArea" :key="data.uuid">
+    <div @click="changeLable(data.label, index)" ref="labelRef">
+      {{ data.label }}
+    </div>
+    <button @click="deleteLable(index)">
+      Удалить
+    </button>
   </div>
 </template>
 
